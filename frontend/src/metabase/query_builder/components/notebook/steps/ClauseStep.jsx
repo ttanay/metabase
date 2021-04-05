@@ -25,6 +25,7 @@ export default function ClauseStep({
     <NotebookCell color={color}>
       {items.map((item, index) => (
         <PopoverWithTrigger
+          key={index}
           triggerElement={
             <NotebookCellItem color={color}>
               {renderName(item, index)}

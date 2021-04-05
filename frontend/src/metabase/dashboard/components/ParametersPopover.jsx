@@ -98,6 +98,7 @@ export const ParameterOptionsSectionsPane = ({
     <ul>
       {sections.map(section => (
         <ParameterOptionsSection
+          key={section.id}
           section={section}
           onClick={() => onSelectSection(section)}
         />
@@ -134,6 +135,7 @@ export const ParameterOptionsPane = ({
       {options &&
         options.map(option => (
           <ParameterOptionItem
+            key={option.menuName || option.name}
             option={option}
             onClick={() => onSelectOption(option)}
           />

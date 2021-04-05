@@ -115,13 +115,13 @@ export const InternalLayout = fitViewport(({ children }) => {
             Components
             <IndentedList>
               {Object.keys(CATEGORIES).map(category => (
-                <li>
+                <li key={category}>
                   <Label>{CATEGORIES[category]}</Label>
                   <IndentedList>
                     {COMPONENTS.filter(
                       c => c.category && c.category === category,
-                    ).map(({ component }) => (
-                      <ComponentItem component={component} />
+                    ).map(({ component }, index) => (
+                      <ComponentItem key={index} component={component} />
                     ))}
                   </IndentedList>
                 </li>
@@ -129,9 +129,11 @@ export const InternalLayout = fitViewport(({ children }) => {
               <li>
                 <Label>Other</Label>
                 <IndentedList>
-                  {COMPONENTS.filter(c => !c.category).map(({ component }) => (
-                    <ComponentItem component={component} />
-                  ))}
+                  {COMPONENTS.filter(c => !c.category).map(
+                    ({ component }, index) => (
+                      <ComponentItem key={index} component={component} />
+                    ),
+                  )}
                 </IndentedList>
               </li>
             </IndentedList>
