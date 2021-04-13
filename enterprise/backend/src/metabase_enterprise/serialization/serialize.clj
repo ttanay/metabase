@@ -22,7 +22,8 @@
             [metabase.models.table :refer [Table]]
             [metabase.models.user :refer [User]]
             [metabase.util :as u]
-            [toucan.db :as db]))
+            [toucan.db :as db]
+            [cheshire.core :as json]))
 
 (def ^:const ^Long serialization-protocol-version
   "Current serialization protocol version.
@@ -108,12 +109,26 @@
                                field/values
                                (u/select-non-nil-keys [:values :human_readable_values]))))))
 
+(defn- field-id* [col-settings-key]
+  (let [[r [f i & _]] ((comp vec json/parse-string) col-settings-key)]
+    (when (and (= "ref" r) (= "field" f) (int? i))
+      i)))
+
+(defn- convert-viz-settings* [acc k v]
+  (if-let [field-id (field-id* k)]
+    (assoc acc (fully-qualified-name (db/select-one Field :id field-id)) v)
+    (assoc acc k v)))
+
+(defn- convert-viz-settings [viz-settings]
+  (reduce-kv convert-viz-settings* {} viz-settings))
+
 (defn- dashboard-cards-for-dashboard
   [dashboard]
-  (let [dashboard-cards (db/select DashboardCard :dashboard_id (u/the-id dashboard))
-        series          (when (not-empty dashboard-cards)
-                          (db/select DashboardCardSeries
-                            :dashboardcard_id [:in (map u/the-id dashboard-cards)]))]
+  (let [dashboard-cards   (db/select DashboardCard :dashboard_id (u/the-id dashboard))
+        series            (when (not-empty dashboard-cards)
+                            (db/select DashboardCardSeries
+                              :dashboardcard_id [:in (map u/the-id dashboard-cards)]))
+        viz-settings-keys [:visualization_settings :column_settings]]
     (for [dashboard-card dashboard-cards]
       (-> dashboard-card
           (assoc :series (for [series series
@@ -121,6 +136,7 @@
                            (-> series
                                (update :card_id (partial fully-qualified-name Card))
                                (dissoc :id :dashboardcard_id))))
+          (assoc-in viz-settings-keys (convert-viz-settings (get-in dashboard-card viz-settings-keys)))
           strip-crud))))
 
 (defmethod serialize-one (type Dashboard)
