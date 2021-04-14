@@ -218,6 +218,7 @@ export default class ItemPicker extends React.Component {
                       )
                       .map(item => (
                         <Item
+                          key={`${item.model}-${item.id}`}
                           item={item}
                           name={item.getName()}
                           color={item.getColor()}
