@@ -21,10 +21,14 @@ describe("scenarios > dashboard > text-box", () => {
       addTextBox("Text *text* __text__");
     });
 
-    it("should render edit and preview actions when editing", () => {
-      // Check edit options
-      cy.icon("edit_document");
+    it("should render correct icons for preview and edit modes", () => {
+      // edit mode
       cy.icon("eye");
+
+      cy.icon("eye").click();
+
+      // preview mode
+      cy.icon("edit_document");
     });
 
     it("should not render edit and preview actions when not editing", () => {
@@ -59,9 +63,6 @@ describe("scenarios > dashboard > text-box", () => {
       // Add save text box to dash
       addTextBox("Dashboard testing text");
       cy.findByText("Save").click();
-
-      cy.findByText("Saving…");
-      cy.findByText("Saving…").should("not.exist");
 
       // Reload page
       cy.reload();

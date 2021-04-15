@@ -184,7 +184,7 @@ export default class DashCard extends Component {
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
         className={cx(
-          "Card relative bordered rounded flex flex-column hover-parent hover--visibility",
+          "Card bordered rounded flex flex-column hover-parent hover--visibility",
           {
             "Card--slow": isSlow === "usually-slow",
           },

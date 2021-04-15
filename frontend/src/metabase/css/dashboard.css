@@ -112,6 +112,10 @@
   margin-top: 1em;
 }
 
+.Dash--editing {
+  margin-top: 2.5em;
+}
+
 .DashCard {
   position: relative;
   z-index: 2;
