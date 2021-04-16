@@ -366,11 +366,6 @@ describe("collection permissions", () => {
               cy.signIn(user);
             });
 
-            it("should not be offered to duplicate dashboard in collections they have `read` access to", () => {
-              cy.visit("/collection/root");
-              findEllipsisMenuFor("Orders in a dashboard").should("not.exist");
-            });
-
             ["/", "/collection/root"].forEach(route => {
               it.skip("should not be offered to save dashboard in collections they have `read` access to (metabase#15281)", () => {
                 const { first_name, last_name } = USERS[user];
@@ -395,14 +390,6 @@ describe("collection permissions", () => {
                     .type("third{Enter}");
                   cy.findByText("Third collection").should("not.exist");
                 });
-              });
-            });
-
-            describe("managing dashboard from the dashboard's edit menu", () => {
-              it("should not be offered to duplicate dashboard in collections they have `read` access to", () => {
-                cy.visit("/dashboard/1");
-                cy.icon("ellipsis").click();
-                cy.findByText("Duplicate").should("not.exist");
               });
             });
           });
